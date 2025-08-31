@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: guide_temple_kolomna-db-1
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kolomna_guide
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: devpass123
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d kolomna_guide"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.7
+    container_name: guide_temple_kolomna-meilisearch-1
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: devkey123
+      MEILI_ENV: development
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch_data:/meili_data
+
+  directus:
+    image: directus/directus:10.10
+    container_name: guide_temple_kolomna-directus-1
+    restart: unless-stopped
+    environment:
+      KEY: "replace-with-random-value-very-long-string"
+      SECRET: "replace-with-random-secret-very-long-string"
+      DB_CLIENT: pg
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: kolomna_guide
+      DB_USER: admin
+      DB_PASSWORD: devpass123
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin123
+      PUBLIC_URL: http://localhost:8055
+    ports:
+      - "8055:8055"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  meilisearch_data:

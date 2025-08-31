@@ -1,24 +1,19 @@
 {
   "name": "guide_temple_kolomna",
   "private": true,
+  "packageManager": "npm@10.0.0",
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
   "scripts": {
+    "dev": "turbo run dev --parallel --filter=web --filter=api",
     "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "test": "turbo run test",
+    "init-mvp": "bash init-mvp.sh"
   },
   "devDependencies": {
-    "prettier": "^3.6.2",
-    "turbo": "^2.5.6",
-    "typescript": "5.9.2"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "npm@11.5.2",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+    "turbo": "^2.0.0",
+    "pg": "^8.11.0"
+  }
 }
